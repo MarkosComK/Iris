@@ -55,7 +55,7 @@
     position: relative; z-index: 1;
     max-width: 680px;
     margin: 0 auto;
-    padding: 3rem 1.5rem 4rem;
+    padding: 3rem 1.5rem 6rem;
   }
 
   header {
@@ -81,10 +81,7 @@
     color: var(--text);
   }
 
-  h1 em {
-    font-style: italic;
-    color: var(--gold-light);
-  }
+  h1 em { font-style: italic; color: var(--gold-light); }
 
   .subtitle {
     margin-top: 1rem;
@@ -123,6 +120,7 @@
   .element:nth-child(4) { animation-delay: 0.35s; }
   .element:nth-child(5) { animation-delay: 0.4s; }
   .element:nth-child(6) { animation-delay: 0.45s; }
+  .element:nth-child(7) { animation-delay: 0.5s; }
 
   .element:active { transform: scale(0.97); }
 
@@ -180,6 +178,229 @@
     opacity: 0;
     animation: fadeUp 0.8s 0.6s ease forwards;
   }
+
+  /* Sections */
+  .section-divider {
+    width: 100%;
+    height: 0.5px;
+    background: var(--border);
+    margin: 3.5rem 0;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.65s ease forwards;
+  }
+
+  .section-block {
+    opacity: 0;
+    animation: fadeUp 0.8s 0.7s ease forwards;
+  }
+
+  #cartas { animation-delay: 0.85s; }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.6rem, 6vw, 2.4rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .section-title em { font-style: italic; }
+  .section-title.rose-accent em { color: var(--rose-light); }
+  .section-title.teal-accent em { color: var(--teal-light); }
+
+  /* Date ideas */
+  .add-form {
+    display: flex;
+    gap: 8px;
+    margin: 1.5rem 0 1rem;
+  }
+
+  .idea-input {
+    flex: 1;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .idea-input::placeholder { color: var(--hint); }
+  .idea-input:focus { border-color: var(--teal-border); }
+
+  .add-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    background: var(--teal-bg);
+    border: 0.5px solid var(--teal-border);
+    border-radius: 6px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    white-space: nowrap;
+  }
+
+  .add-btn:hover { border-color: var(--teal); background: rgba(74,158,138,0.15); }
+
+  .ideas-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .idea-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    transition: border-color 0.2s;
+    animation: fadeUp 0.3s ease forwards;
+  }
+
+  .idea-item:hover { border-color: var(--border-hover); }
+
+  .idea-item.done {
+    border-color: var(--teal-border);
+    background: var(--teal-bg);
+  }
+
+  .idea-check {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 0.5px solid var(--border-hover);
+    background: none;
+    cursor: pointer;
+    color: transparent;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s, background 0.2s, color 0.2s;
+  }
+
+  .idea-check:hover { border-color: var(--teal); color: var(--teal-light); }
+
+  .idea-item.done .idea-check {
+    border-color: var(--teal);
+    background: var(--teal-bg);
+    color: var(--teal-light);
+  }
+
+  .idea-text {
+    flex: 1;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  .idea-item.done .idea-text {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-color: var(--teal);
+  }
+
+  .idea-delete {
+    background: none;
+    border: none;
+    color: var(--hint);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 4px;
+    line-height: 1;
+    opacity: 0;
+    transition: opacity 0.2s, color 0.2s;
+  }
+
+  .idea-item:hover .idea-delete { opacity: 1; }
+  .idea-delete:hover { color: var(--rose-light); }
+
+  .ideas-empty {
+    font-size: 12px;
+    color: var(--hint);
+    text-align: center;
+    padding: 1.5rem 0;
+    letter-spacing: 0.05em;
+  }
+
+  /* Love letters */
+  .letters-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 1.5rem;
+  }
+
+  .letter-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--rose-bg);
+    border: 0.5px solid var(--rose-border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+
+  .letter-card:hover {
+    border-color: var(--rose);
+    background: rgba(196,107,138,0.13);
+    transform: translateX(3px);
+  }
+
+  .letter-icon {
+    font-size: 1.8rem;
+    color: var(--rose-light);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .letter-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .letter-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--text);
+    font-style: italic;
+  }
+
+  .letter-sub {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .letter-arrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--rose-light);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .letter-card:hover .letter-arrow { transform: translateX(4px); }
 
   /* Modal */
   .overlay {
@@ -292,8 +513,10 @@
   @media (max-width: 400px) {
     .grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .el-sym { font-size: 2rem; }
-    .page { padding: 2rem 1rem 3rem; }
+    .page { padding: 2rem 1rem 4rem; }
     h1 { font-size: 1.9rem; }
+    .add-form { flex-direction: column; }
+    .add-btn { width: 100%; }
   }
 </style>
 </head>
@@ -310,6 +533,59 @@
   <div class="grid" id="grid"></div>
 
   <p class="footer-note">// mais elementos em breve &nbsp;·&nbsp; com amor</p>
+
+  <div class="section-divider"></div>
+
+  <!-- Date Ideas -->
+  <section class="section-block" id="programas">
+    <p class="label">programas · lista colaborativa</p>
+    <h2 class="section-title teal-accent">Programas pra<br><em>gente fazer</em></h2>
+    <p class="subtitle">Adicione ideias de programas e aventuras. Marque os que já fizemos juntos.</p>
+
+    <form class="add-form" id="add-idea-form">
+      <input
+        type="text"
+        class="idea-input"
+        id="idea-input"
+        placeholder="uma nova ideia de programa..."
+        maxlength="120"
+        autocomplete="off"
+      />
+      <button type="submit" class="add-btn">adicionar</button>
+    </form>
+
+    <ul class="ideas-list" id="ideas-list">
+      <li class="ideas-empty">carregando...</li>
+    </ul>
+  </section>
+
+  <div class="section-divider" style="animation-delay: 0.8s;"></div>
+
+  <!-- Love Letters -->
+  <section class="section-block" id="cartas">
+    <p class="label">cartas · palavras do coração</p>
+    <h2 class="section-title rose-accent">Cartinhas de <em>amor</em></h2>
+    <p class="subtitle">Palavras escritas com carinho, para guardar para sempre.</p>
+
+    <div class="letters-grid">
+      <a href="love_letter.jpg" target="_blank" class="letter-card">
+        <span class="letter-icon">✉</span>
+        <div class="letter-info">
+          <span class="letter-title">Cartinha — 16 de abril, 2026</span>
+          <span class="letter-sub">de Markos, com carinho · quinta-feira</span>
+        </div>
+        <span class="letter-arrow">→</span>
+      </a>
+      <a href="Cartinha.pdf" target="_blank" class="letter-card">
+        <span class="letter-icon">✉</span>
+        <div class="letter-info">
+          <span class="letter-title">Cartinha — 22 de abril, 2026</span>
+          <span class="letter-sub">da Iris, com amor · para guardar sempre</span>
+        </div>
+        <span class="letter-arrow">→</span>
+      </a>
+    </div>
+  </section>
 
 </div>
 
@@ -351,8 +627,22 @@ const elements = [
     color: 'rose',
     msg: 'A pedra do amor incondicional. Dizem que quem carrega quartzo rosa perto do coração nunca anda sozinho. Eu acredito nisso.'
   },
-  { num: '?', sym: '?', name: 'em breve', mass: '— —', color: 'locked' },
-  { num: '?', sym: '?', name: 'em breve', mass: '— —', color: 'locked' },
+  {
+    num: 29,
+    sym: 'Cu',
+    name: 'Cobre',
+    mass: '63.546 u',
+    color: 'gold',
+    msg: 'O cobre aquece tudo que toca e brilha com o tempo. Elemento 29, símbolo Cu. A primeira metade de algo que a química descobriu antes de mim.'
+  },
+  {
+    num: 52,
+    sym: 'Te',
+    name: 'Telúrio',
+    mass: '127.60 u',
+    color: 'rose',
+    msg: 'Raro e especial, quase nunca encontrado puro na natureza. Símbolo Te. Mas quando o Cobre encontra o Telúrio, a ciência confirma o que eu já sabia: você é CuTe.'
+  },
   { num: '?', sym: '?', name: 'em breve', mass: '— —', color: 'locked' },
 ];
 
@@ -396,6 +686,83 @@ function handleOverlayClick(e) {
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeModal();
+});
+
+</script>
+
+<script type="module">
+import { initializeApp }                            from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, push, update, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Paste your Firebase config below.
+// console.firebase.google.com → your project → Project settings → Your apps
+// ─────────────────────────────────────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey:            "AIzaSyB1wOAWC3qE-osPs9UhGbrvcQ1PxAiu81s",
+  authDomain:        "iris-a9ccc.firebaseapp.com",
+  databaseURL:       "https://iris-a9ccc-default-rtdb.firebaseio.com",
+  projectId:         "iris-a9ccc",
+  storageBucket:     "iris-a9ccc.firebasestorage.app",
+  messagingSenderId: "604325284992",
+  appId:             "1:604325284992:web:903490fc7d6d16c9542a65"
+};
+
+const app      = initializeApp(firebaseConfig);
+const db       = getDatabase(app);
+const ideasRef = ref(db, 'date-ideas');
+
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function renderIdeas(ideas) {
+  const list = document.getElementById('ideas-list');
+  list.innerHTML = '';
+  if (ideas.length === 0) {
+    list.innerHTML = '<li class="ideas-empty">nenhuma ideia ainda · adicione a primeira</li>';
+    return;
+  }
+  ideas.forEach(idea => {
+    const li = document.createElement('li');
+    li.className = 'idea-item' + (idea.done ? ' done' : '');
+    li.innerHTML = `
+      <button class="idea-check" title="${idea.done ? 'desmarcar' : 'marcar como feito'}">✓</button>
+      <span class="idea-text">${escapeHtml(idea.text)}</span>
+      <button class="idea-delete" title="remover">×</button>
+    `;
+    li.querySelector('.idea-check').addEventListener('click', () =>
+      update(ref(db, 'date-ideas/' + idea.key), { done: !idea.done })
+    );
+    li.querySelector('.idea-delete').addEventListener('click', () =>
+      remove(ref(db, 'date-ideas/' + idea.key))
+    );
+    list.appendChild(li);
+  });
+}
+
+// Real-time listener — updates instantly on all devices
+onValue(ideasRef, snapshot => {
+  const data  = snapshot.val() || {};
+  const ideas = Object.entries(data)
+    .map(([key, val]) => ({ key, ...val }))
+    .sort((a, b) => b.createdAt - a.createdAt);
+  renderIdeas(ideas);
+});
+
+document.getElementById('add-idea-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const input = document.getElementById('idea-input');
+  const val   = input.value.trim();
+  if (val) {
+    push(ideasRef, { text: val, done: false, createdAt: Date.now() });
+    input.value = '';
+    input.focus();
+  }
 });
 </script>
 </body>
