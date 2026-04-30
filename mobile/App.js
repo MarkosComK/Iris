@@ -48,8 +48,6 @@ export default function App() {
             color: colors.text,
           },
           headerTintColor: colors.text,
-          animation: 'fade',
-          animationDuration: 180,
         }}
       >
         <Tab.Screen name="Home"      component={HomeScreen}      options={{ title: 'Para Iris'  }} />
