@@ -560,8 +560,23 @@
     <p class="label">cartas físicas · guardadas com carinho</p>
     <h2 class="gold-accent">Cartas <em>escritas</em></h2>
     <p class="subtitle">As palavras escritas à mão, para guardar para sempre.</p>
-    <div class="letters-grid" id="physical-grid">
-      <p class="feed-empty">carregando...</p>
+    <div class="letters-grid">
+      <a href="love_letter.jpg" target="_blank" class="letter-card gold">
+        <span class="letter-icon">✉</span>
+        <div class="letter-info">
+          <span class="letter-title">Cartinha — 16 de abril, 2026</span>
+          <span class="letter-sub">de Markos, com carinho · quinta-feira</span>
+        </div>
+        <span class="letter-arrow">→</span>
+      </a>
+      <a href="Cartinha.jpg" target="_blank" class="letter-card rose">
+        <span class="letter-icon">✉</span>
+        <div class="letter-info">
+          <span class="letter-title">Cartinha — 22 de abril, 2026</span>
+          <span class="letter-sub">da Iris, com amor · para guardar sempre</span>
+        </div>
+        <span class="letter-arrow">→</span>
+      </a>
     </div>
   </section>
 
@@ -707,48 +722,13 @@ const firebaseConfig = {
   appId:             "1:604325284992:web:903490fc7d6d16c9542a65"
 };
 
-const app         = initializeApp(firebaseConfig);
-const db          = getDatabase(app);
-const lettersRef  = ref(db, 'letters');
-const physicalRef = ref(db, 'physical-letters');
+const app        = initializeApp(firebaseConfig);
+const db         = getDatabase(app);
+const lettersRef = ref(db, 'letters');
 
 function escapeHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-
-// ── Physical letters ──
-function renderPhysical(items) {
-  const grid = document.getElementById('physical-grid');
-  grid.innerHTML = '';
-  if (items.length === 0) {
-    grid.innerHTML = '<p class="feed-empty">nenhuma carta física ainda · adicione abaixo</p>';
-    return;
-  }
-  items.forEach(item => {
-    const isGold = item.color === 'gold';
-    const a = document.createElement('a');
-    a.href = item.url;
-    a.target = '_blank';
-    a.className = 'letter-card ' + (isGold ? 'gold' : 'rose');
-    a.innerHTML = `
-      <span class="letter-icon">✉</span>
-      <div class="letter-info">
-        <span class="letter-title">${escapeHtml(item.title)}</span>
-        <span class="letter-sub">${escapeHtml(item.sub)}</span>
-      </div>
-      <span class="letter-arrow">→</span>
-    `;
-    grid.appendChild(a);
-  });
-}
-
-onValue(physicalRef, snapshot => {
-  const data = snapshot.val() || {};
-  const items = Object.entries(data)
-    .map(([key, val]) => ({ key, ...val }))
-    .sort((a, b) => a.createdAt - b.createdAt);
-  renderPhysical(items);
-});
 
 // ── Digital letters feed ──
 function renderFeed(letters) {

@@ -40,19 +40,7 @@ Dark, minimalist, romantic. Never break these:
 - `mobile-app` — mobile app in progress, merge to main when ready
 
 ## Adding a new physical letter
-1. Drop the JPG into `iris-fotos` repo (public GitHub repo, just images)
-2. Push to main
-3. In Firebase Console → Realtime Database → `physical-letters` node → Add child:
-```json
-{
-  "title": "Cartinha — DD de mês, YYYY",
-  "sub": "de Markos, com carinho",
-  "color": "gold",
-  "url": "https://raw.githubusercontent.com/MarkosComK/iris-fotos/main/filename.jpg",
-  "createdAt": 1234567890000
-}
-```
-Use `color: "gold"` for Markos, `color: "rose"` for Iris. `createdAt` is a Unix timestamp in ms — get it from `Date.now()` in browser console.
+Drop the JPG into `mobile/assets/` and add an entry to the `PHYSICAL` array in `mobile/src/screens/CartinhasScreen.js`. Also add the card to the `letters-grid` in `letters.html`. Then do a new `eas build` so she gets the updated APK.
 
 ## Files to never touch
 - `iris-a9ccc-firebase-adminsdk-fbsvc-d5a8b2bcca.json` (gitignored, Firebase admin SDK key)

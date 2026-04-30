@@ -7,7 +7,25 @@ import {
 import { useFonts, CormorantGaramond_300Light, CormorantGaramond_300Light_Italic, CormorantGaramond_400Regular } from '@expo-google-fonts/cormorant-garamond';
 import { DMMono_300Light } from '@expo-google-fonts/dm-mono';
 import { ref, push, remove, onValue } from 'firebase/database';
+import { Asset } from 'expo-asset';
 import { db } from '../lib/firebase';
+
+const PHYSICAL = [
+  {
+    key: 'markos-apr16',
+    title: 'Cartinha — 16 de abril, 2026',
+    sub: 'de Markos, com carinho · quinta-feira',
+    color: 'gold',
+    asset: require('../../assets/love_letter.jpg'),
+  },
+  {
+    key: 'iris-apr22',
+    title: 'Cartinha — 22 de abril, 2026',
+    sub: 'da Iris, com amor · para guardar sempre',
+    color: 'rose',
+    asset: require('../../assets/Cartinha.jpg'),
+  },
+];
 import { colors } from '../lib/theme';
 import { notifyNewLetter } from '../lib/notifications';
 import { myTokenKey } from '../lib/tokenStore';
@@ -26,22 +44,17 @@ function todayStr() {
 
 export default function CartinhasScreen() {
   const { width } = useWindowDimensions();
-  const [physical, setPhysical] = useState([]);
   const [letters, setLetters] = useState([]);
   const [sender, setSender] = useState('Markos');
   const [body, setBody] = useState('');
   const [selected, setSelected] = useState(null);
   const [photoUri, setPhotoUri] = useState(null);
 
-  useEffect(() => {
-    return onValue(ref(db, 'physical-letters'), snapshot => {
-      const data = snapshot.val() || {};
-      const list = Object.entries(data)
-        .map(([key, val]) => ({ key, ...val }))
-        .sort((a, b) => a.createdAt - b.createdAt);
-      setPhysical(list);
-    });
-  }, []);
+  async function openPhysical(item) {
+    const asset = Asset.fromModule(item.asset);
+    await asset.downloadAsync();
+    setPhotoUri(asset.localUri);
+  }
 
   const [fontsLoaded] = useFonts({
     CormorantGaramond_300Light,
@@ -102,28 +115,24 @@ export default function CartinhasScreen() {
         {/* Physical letters */}
         <Text style={s.sectionLabel}>cartas físicas · guardadas com carinho</Text>
         <Text style={[s.h2, { color: colors.goldLight }]}>Cartas escritas</Text>
-        {physical.length === 0 ? (
-          <Text style={s.empty}>nenhuma carta física ainda</Text>
-        ) : (
-          physical.map(letter => {
-            const isGold = letter.color === 'gold';
-            return (
-              <TouchableOpacity
-                key={letter.key}
-                style={[s.physicalCard, { backgroundColor: isGold ? colors.goldBg : colors.roseBg, borderColor: isGold ? colors.goldBorder : colors.roseBorder }]}
-                onPress={() => setPhotoUri(letter.url)}
-                activeOpacity={0.75}
-              >
-                <Text style={[s.physicalIcon, { color: isGold ? colors.goldLight : colors.roseLight }]}>✉</Text>
-                <View style={s.physicalInfo}>
-                  <Text style={s.physicalTitle}>{letter.title}</Text>
-                  <Text style={s.physicalSub}>{letter.sub}</Text>
-                </View>
-                <Text style={[s.physicalArrow, { color: isGold ? colors.goldLight : colors.roseLight }]}>→</Text>
-              </TouchableOpacity>
-            );
-          })
-        )}
+        {PHYSICAL.map(item => {
+          const isGold = item.color === 'gold';
+          return (
+            <TouchableOpacity
+              key={item.key}
+              style={[s.physicalCard, { backgroundColor: isGold ? colors.goldBg : colors.roseBg, borderColor: isGold ? colors.goldBorder : colors.roseBorder }]}
+              onPress={() => openPhysical(item)}
+              activeOpacity={0.75}
+            >
+              <Text style={[s.physicalIcon, { color: isGold ? colors.goldLight : colors.roseLight }]}>✉</Text>
+              <View style={s.physicalInfo}>
+                <Text style={s.physicalTitle}>{item.title}</Text>
+                <Text style={s.physicalSub}>{item.sub}</Text>
+              </View>
+              <Text style={[s.physicalArrow, { color: isGold ? colors.goldLight : colors.roseLight }]}>→</Text>
+            </TouchableOpacity>
+          );
+        })}
 
         <View style={s.divider} />
 
