@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cartinhas · Para Iris</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e0c0a;
+    --surface: #161410;
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(255,255,255,0.2);
+    --text: #f0ebe3;
+    --muted: rgba(240,235,227,0.45);
+    --hint: rgba(240,235,227,0.2);
+
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-bg: rgba(201,168,76,0.08);
+    --gold-border: rgba(201,168,76,0.3);
+
+    --rose: #c46b8a;
+    --rose-light: #e89cb5;
+    --rose-bg: rgba(196,107,138,0.08);
+    --rose-border: rgba(196,107,138,0.3);
+
+    --teal: #4a9e8a;
+    --teal-light: #7ecfbc;
+    --teal-bg: rgba(74,158,138,0.08);
+    --teal-border: rgba(74,158,138,0.3);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .noise {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.6;
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+  }
+
+  /* ── Typography ── */
+  .label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 8vw, 3.2rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+
+  h1 em { font-style: italic; color: var(--rose-light); }
+
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.6rem, 6vw, 2.4rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  h2 em { font-style: italic; }
+  h2.rose-accent em { color: var(--rose-light); }
+  h2.gold-accent em { color: var(--gold-light); }
+
+  .subtitle {
+    margin-top: 1rem;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 400px;
+  }
+
+  /* ── Layout ── */
+  .section-divider {
+    width: 100%;
+    height: 0.5px;
+    background: var(--border);
+    margin: 3.5rem 0;
+  }
+
+  .section-block {
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+  }
+
+  /* ── Back link ── */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    margin-bottom: 2.5rem;
+    transition: color 0.2s;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.05s ease forwards;
+  }
+
+  .back-link:hover { color: var(--text); }
+
+  /* ── Header ── */
+  header {
+    margin-bottom: 3.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.15s ease forwards;
+  }
+
+  /* ── Physical letter cards ── */
+  .letters-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 1.5rem;
+  }
+
+  .letter-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-radius: 6px;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+
+  .letter-card.rose {
+    background: var(--rose-bg);
+    border: 0.5px solid var(--rose-border);
+  }
+
+  .letter-card.gold {
+    background: var(--gold-bg);
+    border: 0.5px solid var(--gold-border);
+  }
+
+  .letter-card.rose:hover {
+    border-color: var(--rose);
+    background: rgba(196,107,138,0.13);
+    transform: translateX(3px);
+  }
+
+  .letter-card.gold:hover {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.13);
+    transform: translateX(3px);
+  }
+
+  .letter-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .letter-card.rose .letter-icon { color: var(--rose-light); }
+  .letter-card.gold .letter-icon { color: var(--gold-light); }
+
+  .letter-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .letter-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--text);
+    font-style: italic;
+  }
+
+  .letter-sub {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .letter-arrow {
+    font-size: 14px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .letter-card.rose .letter-arrow { color: var(--rose-light); }
+  .letter-card.gold .letter-arrow { color: var(--gold-light); }
+  .letter-card:hover .letter-arrow { transform: translateX(4px); }
+
+  /* ── Compose ── */
+  .sender-selector {
+    display: flex;
+    gap: 8px;
+    margin: 1.5rem 0 1rem;
+  }
+
+  .sender-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 9px 18px;
+    border-radius: 6px;
+    border: 0.5px solid var(--border);
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+
+  .sender-btn.markos.active {
+    color: var(--gold-light);
+    border-color: var(--gold-border);
+    background: var(--gold-bg);
+  }
+
+  .sender-btn.iris.active {
+    color: var(--rose-light);
+    border-color: var(--rose-border);
+    background: var(--rose-bg);
+  }
+
+  .sender-btn:not(.active):hover {
+    border-color: var(--border-hover);
+    color: var(--text);
+  }
+
+  .compose-date {
+    font-size: 10px;
+    color: var(--hint);
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+    padding-left: 2px;
+  }
+
+  .compose-area {
+    width: 100%;
+    background: var(--surface);
+    border: 0.5px solid var(--gold-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1.9;
+    min-height: 220px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 1rem;
+  }
+
+  .compose-area::placeholder { color: var(--hint); font-style: italic; }
+  .compose-area.gold-theme:focus { border-color: var(--gold); }
+  .compose-area.rose-theme { border-color: var(--rose-border); }
+  .compose-area.rose-theme:focus { border-color: var(--rose); }
+
+  .send-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .send-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-radius: 6px;
+    padding: 12px 28px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, opacity 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .send-btn.gold-theme {
+    color: var(--gold-light);
+    background: var(--gold-bg);
+    border: 0.5px solid var(--gold-border);
+  }
+
+  .send-btn.gold-theme:hover { border-color: var(--gold); background: rgba(201,168,76,0.15); }
+
+  .send-btn.rose-theme {
+    color: var(--rose-light);
+    background: var(--rose-bg);
+    border: 0.5px solid var(--rose-border);
+  }
+
+  .send-btn.rose-theme:hover { border-color: var(--rose); background: rgba(196,107,138,0.15); }
+
+  .send-btn:disabled { opacity: 0.4; cursor: default; }
+
+  .send-success {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--teal-light);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .send-success.show { opacity: 1; }
+
+  /* ── Letters feed ── */
+  .feed-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 1.5rem;
+  }
+
+  .feed-item {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    animation: fadeUp 0.3s ease forwards;
+  }
+
+  .feed-item:hover { transform: translateX(3px); }
+
+  .feed-item.from-markos {
+    background: var(--gold-bg);
+    border-color: var(--gold-border);
+  }
+
+  .feed-item.from-markos:hover { border-color: var(--gold); }
+
+  .feed-item.from-iris {
+    background: var(--rose-bg);
+    border-color: var(--rose-border);
+  }
+
+  .feed-item.from-iris:hover { border-color: var(--rose); }
+
+  .feed-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .feed-from {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .from-markos .feed-from { color: var(--gold-light); }
+  .from-iris .feed-from { color: var(--rose-light); }
+
+  .feed-date {
+    font-size: 9px;
+    color: var(--hint);
+    letter-spacing: 0.06em;
+  }
+
+  .feed-preview {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-style: italic;
+    color: rgba(240,235,227,0.6);
+    line-height: 1.55;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .feed-read {
+    text-align: right;
+    font-size: 9px;
+    color: var(--hint);
+    margin-top: 10px;
+    letter-spacing: 0.08em;
+    transition: color 0.2s;
+  }
+
+  .feed-item:hover .feed-read { color: var(--muted); }
+
+  .feed-empty {
+    font-size: 12px;
+    color: var(--hint);
+    text-align: center;
+    padding: 2rem 0;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Reading modal ── */
+  .overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(10,8,6,0.88);
+    align-items: center; justify-content: center;
+    padding: 1.5rem;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .overlay.open { display: flex; }
+
+  .letter-modal {
+    background: var(--surface);
+    border: 0.5px solid var(--border-hover);
+    border-radius: 12px;
+    padding: 2.5rem 2rem 2rem;
+    max-width: 520px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    animation: popIn 0.28s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+
+  .letter-modal.from-markos { border-color: var(--gold-border); }
+  .letter-modal.from-iris  { border-color: var(--rose-border); }
+
+  .modal-meta { margin-bottom: 0; }
+
+  .modal-from {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .from-markos .modal-from { color: var(--gold-light); }
+  .from-iris  .modal-from { color: var(--rose-light); }
+
+  .modal-date {
+    font-size: 10px;
+    color: var(--hint);
+    letter-spacing: 0.08em;
+  }
+
+  .modal-divider {
+    width: 40px;
+    height: 0.5px;
+    margin: 1.5rem 0;
+  }
+
+  .from-markos .modal-divider { background: var(--gold); }
+  .from-iris  .modal-divider { background: var(--rose); }
+
+  .modal-body {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-style: italic;
+    font-weight: 300;
+    color: rgba(240,235,227,0.85);
+    line-height: 1.95;
+    white-space: pre-wrap;
+    margin-bottom: 2rem;
+  }
+
+  .modal-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .modal-close {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: none;
+    border: 0.5px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .modal-close:hover { border-color: var(--border-hover); color: var(--text); }
+
+  .modal-delete {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--hint);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 0;
+    transition: color 0.2s;
+  }
+
+  .modal-delete:hover { color: var(--rose-light); }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.92); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  @media (max-width: 400px) {
+    .page { padding: 2rem 1rem 4rem; }
+    h1 { font-size: 1.9rem; }
+    .sender-selector { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="page">
+
+  <a href="index.html" class="back-link">← início</a>
+
+  <header>
+    <p class="label">cartinhas · palavras do coração</p>
+    <h1>Cartas entre<br><em>nós</em></h1>
+    <p class="subtitle">Um lugar para as palavras que ficam. Cada carta, uma lembrança guardada para sempre.</p>
+  </header>
+
+  <!-- Physical / scanned letters -->
+  <section class="section-block" style="animation-delay: 0.3s;">
+    <p class="label">cartas físicas · guardadas com carinho</p>
+    <h2 class="gold-accent">Cartas <em>escritas</em></h2>
+    <p class="subtitle">As palavras escritas à mão, para guardar para sempre.</p>
+
+    <div class="letters-grid">
+      <a href="love_letter.jpg" target="_blank" class="letter-card gold">
+        <span class="letter-icon">✉</span>
+        <div class="letter-info">
+          <span class="letter-title">Cartinha — 16 de abril, 2026</span>
+          <span class="letter-sub">de Markos, com carinho · quinta-feira</span>
+        </div>
+        <span class="letter-arrow">→</span>
+      </a>
+      <a href="Cartinha.pdf" target="_blank" class="letter-card rose">
+        <span class="letter-icon">✉</span>
+        <div class="letter-info">
+          <span class="letter-title">Cartinha — 22 de abril, 2026</span>
+          <span class="letter-sub">da Iris, com amor · para guardar sempre</span>
+        </div>
+        <span class="letter-arrow">→</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Compose -->
+  <section class="section-block" style="animation-delay: 0.45s;">
+    <p class="label">escrever · enviar uma cartinha</p>
+    <h2 class="gold-accent" id="compose-title">Escrever uma <em>cartinha</em></h2>
+    <p class="subtitle">Escolha quem está escrevendo e deixe as palavras saírem.</p>
+
+    <div class="sender-selector">
+      <button class="sender-btn markos active" id="btn-markos" onclick="selectSender('Markos')">Markos</button>
+      <button class="sender-btn iris" id="btn-iris" onclick="selectSender('Iris')">Iris</button>
+    </div>
+
+    <p class="compose-date" id="compose-date"></p>
+    <textarea
+      class="compose-area gold-theme"
+      id="compose-area"
+      placeholder="Escreva sua cartinha aqui..."
+      maxlength="3000"
+    ></textarea>
+
+    <div class="send-row">
+      <button class="send-btn gold-theme" id="send-btn" onclick="sendLetter()">
+        <span>enviar</span>
+        <span>✉</span>
+      </button>
+      <span class="send-success" id="send-success">carta enviada ✓</span>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Letters feed -->
+  <section class="section-block" style="animation-delay: 0.6s;">
+    <p class="label">todas as cartas · clique para ler</p>
+    <h2 class="rose-accent">Todas as <em>cartinhas</em></h2>
+    <p class="subtitle">Cada uma escrita com carinho. Clique para abrir.</p>
+
+    <div class="feed-list" id="feed-list">
+      <p class="feed-empty">carregando...</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- Letter reading overlay -->
+<div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
+  <div class="letter-modal" id="letter-modal">
+    <div class="modal-meta">
+      <p class="modal-from" id="m-from"></p>
+      <p class="modal-date" id="m-date"></p>
+    </div>
+    <div class="modal-divider"></div>
+    <p class="modal-body" id="m-body"></p>
+    <div class="modal-actions">
+      <button class="modal-close" onclick="closeModal()">fechar</button>
+      <button class="modal-delete" id="modal-delete-btn" onclick="deleteLetter()">apagar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentSender = 'Markos';
+let currentLetterKey = null;
+
+function selectSender(name) {
+  currentSender = name;
+  const isMarkos = name === 'Markos';
+  document.getElementById('btn-markos').classList.toggle('active', isMarkos);
+  document.getElementById('btn-iris').classList.toggle('active', !isMarkos);
+
+  const theme = isMarkos ? 'gold' : 'rose';
+  const other = isMarkos ? 'rose' : 'gold';
+
+  const area  = document.getElementById('compose-area');
+  const btn   = document.getElementById('send-btn');
+  const title = document.getElementById('compose-title');
+
+  area.classList.replace(other + '-theme', theme + '-theme');
+  btn.classList.replace(other + '-theme', theme + '-theme');
+  title.className = theme + '-accent';
+}
+
+function formatDate(ts) {
+  const d = new Date(ts);
+  const months = ['janeiro','fevereiro','março','abril','maio','junho',
+                  'julho','agosto','setembro','outubro','novembro','dezembro'];
+  return `${d.getDate()} de ${months[d.getMonth()]}, ${d.getFullYear()}`;
+}
+
+(function setComposeDate() {
+  const months = ['janeiro','fevereiro','março','abril','maio','junho',
+                  'julho','agosto','setembro','outubro','novembro','dezembro'];
+  const now = new Date();
+  document.getElementById('compose-date').textContent =
+    `${now.getDate()} de ${months[now.getMonth()]}, ${now.getFullYear()}`;
+})();
+
+function sendLetter() { /* overridden by module */ }
+function deleteLetter() { /* overridden by module */ }
+
+function openModal(letter) {
+  currentLetterKey = letter.key || null;
+  const modal = document.getElementById('letter-modal');
+  modal.className = 'letter-modal from-' + letter.from.toLowerCase();
+  document.getElementById('m-from').textContent = 'de ' + letter.from;
+  document.getElementById('m-date').textContent = formatDate(letter.createdAt);
+  document.getElementById('m-body').textContent = letter.body;
+  document.getElementById('modal-delete-btn').style.display = letter.key ? '' : 'none';
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  currentLetterKey = null;
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('overlay')) closeModal();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+
+<script type="module">
+import { initializeApp }                        from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, push, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyB1wOAWC3qE-osPs9UhGbrvcQ1PxAiu81s",
+  authDomain:        "iris-a9ccc.firebaseapp.com",
+  databaseURL:       "https://iris-a9ccc-default-rtdb.firebaseio.com",
+  projectId:         "iris-a9ccc",
+  storageBucket:     "iris-a9ccc.firebasestorage.app",
+  messagingSenderId: "604325284992",
+  appId:             "1:604325284992:web:903490fc7d6d16c9542a65"
+};
+
+const app        = initializeApp(firebaseConfig);
+const db         = getDatabase(app);
+const lettersRef = ref(db, 'letters');
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderFeed(letters) {
+  const list = document.getElementById('feed-list');
+  list.innerHTML = '';
+  if (letters.length === 0) {
+    list.innerHTML = '<p class="feed-empty">nenhuma cartinha ainda · seja o primeiro a escrever</p>';
+    return;
+  }
+  letters.forEach(letter => {
+    const div = document.createElement('div');
+    div.className = 'feed-item from-' + letter.from.toLowerCase();
+    const preview = letter.body.length > 140 ? letter.body.slice(0, 140) + '…' : letter.body;
+    div.innerHTML = `
+      <div class="feed-header">
+        <span class="feed-from">${escapeHtml(letter.from)}</span>
+        <span class="feed-date">${formatDate(letter.createdAt)}</span>
+      </div>
+      <p class="feed-preview">${escapeHtml(preview)}</p>
+      <p class="feed-read">ler →</p>
+    `;
+    div.addEventListener('click', () => openModal(letter));
+    list.appendChild(div);
+  });
+}
+
+onValue(lettersRef, snapshot => {
+  const data = snapshot.val() || {};
+  const letters = Object.entries(data)
+    .map(([key, val]) => ({ key, ...val }))
+    .sort((a, b) => b.createdAt - a.createdAt);
+  renderFeed(letters);
+});
+
+window.sendLetter = function() {
+  const area = document.getElementById('compose-area');
+  const body = area.value.trim();
+  if (!body) return;
+
+  const btn = document.getElementById('send-btn');
+  btn.disabled = true;
+
+  push(lettersRef, { from: currentSender, body, createdAt: Date.now() }).then(() => {
+    area.value = '';
+    btn.disabled = false;
+    const notice = document.getElementById('send-success');
+    notice.classList.add('show');
+    setTimeout(() => notice.classList.remove('show'), 3000);
+  });
+};
+
+window.deleteLetter = function() {
+  if (!currentLetterKey) return;
+  if (!confirm('Apagar esta cartinha para sempre?')) return;
+  remove(ref(db, 'letters/' + currentLetterKey));
+  closeModal();
+};
+</script>
+</body>
+</html>
