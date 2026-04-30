@@ -39,6 +39,31 @@ Dark, minimalist, romantic. Never break these:
 - `main` — production (web is live here)
 - `mobile-app` — mobile app in progress, merge to main when ready
 
+## Deploying a new version to her Android
+
+```bash
+cd mobile
+
+# Build APK (runs on EAS cloud, ~10-15 min, free up to 30/month)
+eas build --platform android --profile preview
+
+# When done, EAS gives a download link — send her that via WhatsApp/etc.
+# She installs it over the old one, data is preserved (Firebase is remote)
+```
+
+**For small changes (UI tweaks, no new native libs):**
+```bash
+eas update --branch preview --message "o que mudou"
+# She gets it automatically next time she opens the app, no reinstall needed
+```
+
+**After she installs a new build**, check Firebase Console → Realtime Database → `tokens/`
+Her push token should appear within seconds of opening the app.
+
+**Pending before next build:**
+- Test push notifications (tokens/ node should populate after she opens new APK)
+- More features TBD
+
 ## Adding a new physical letter
 Drop the JPG into `mobile/assets/` and add an entry to the `PHYSICAL` array in `mobile/src/screens/CartinhasScreen.js`. Also add the card to the `letters-grid` in `letters.html`. Then do a new `eas build` so she gets the updated APK.
 
