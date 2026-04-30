@@ -525,6 +525,50 @@
 
   .modal-delete:hover { color: var(--rose-light); }
 
+  /* ── Upload ── */
+  .upload-sender-selector { display: flex; gap: 8px; margin: 1.5rem 0 1rem; }
+
+  .upload-file-label {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    background: var(--gold-bg);
+    border: 0.5px solid var(--gold-border);
+    border-radius: 6px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .upload-file-label:hover { border-color: var(--gold); background: rgba(201,168,76,0.15); }
+
+  .upload-filename {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 6px;
+    letter-spacing: 0.05em;
+    min-height: 16px;
+  }
+
+  .upload-progress-wrap {
+    width: 100%;
+    height: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .upload-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--gold);
+    border-radius: 2px;
+    transition: width 0.2s;
+  }
+
   /* ── Animations ── */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(12px); }
@@ -560,24 +604,42 @@
     <p class="label">cartas físicas · guardadas com carinho</p>
     <h2 class="gold-accent">Cartas <em>escritas</em></h2>
     <p class="subtitle">As palavras escritas à mão, para guardar para sempre.</p>
+    <div class="letters-grid" id="physical-grid">
+      <p class="feed-empty">carregando...</p>
+    </div>
+  </section>
 
-    <div class="letters-grid">
-      <a href="love_letter.jpg" target="_blank" class="letter-card gold">
-        <span class="letter-icon">✉</span>
-        <div class="letter-info">
-          <span class="letter-title">Cartinha — 16 de abril, 2026</span>
-          <span class="letter-sub">de Markos, com carinho · quinta-feira</span>
-        </div>
-        <span class="letter-arrow">→</span>
-      </a>
-      <a href="Cartinha.pdf" target="_blank" class="letter-card rose">
-        <span class="letter-icon">✉</span>
-        <div class="letter-info">
-          <span class="letter-title">Cartinha — 22 de abril, 2026</span>
-          <span class="letter-sub">da Iris, com amor · para guardar sempre</span>
-        </div>
-        <span class="letter-arrow">→</span>
-      </a>
+  <div class="section-divider"></div>
+
+  <!-- Upload a physical letter -->
+  <section class="section-block" style="animation-delay: 0.38s;">
+    <p class="label">adicionar · nova carta física</p>
+    <h2 class="gold-accent">Adicionar uma <em>carta</em></h2>
+    <p class="subtitle">Escolha a foto da carta, preencha os dados e salve.</p>
+
+    <div class="upload-sender-selector">
+      <button class="sender-btn markos active" id="upload-btn-markos" onclick="selectUploadSender('Markos')">Markos</button>
+      <button class="sender-btn iris" id="upload-btn-iris" onclick="selectUploadSender('Iris')">Iris</button>
+    </div>
+
+    <input type="text" class="idea-input" id="upload-title" placeholder="título da carta (ex: Cartinha — 30 de abril, 2026)" style="width:100%;margin-bottom:8px;" />
+    <input type="text" class="idea-input" id="upload-sub"   placeholder="subtítulo (ex: de Markos, com carinho)" style="width:100%;margin-bottom:12px;" />
+
+    <label class="upload-file-label" id="upload-file-label">
+      <input type="file" id="upload-file" accept="image/*" style="display:none;" onchange="onFileChosen(this)" />
+      escolher imagem
+    </label>
+    <p class="upload-filename" id="upload-filename"></p>
+
+    <div class="send-row" style="margin-top:12px;">
+      <button class="send-btn gold-theme" id="upload-submit-btn" onclick="uploadPhysicalLetter()">
+        <span>salvar carta</span><span>✉</span>
+      </button>
+      <span class="send-success" id="upload-success">carta salva ✓</span>
+    </div>
+
+    <div class="upload-progress-wrap" id="upload-progress-wrap" style="display:none;margin-top:12px;">
+      <div class="upload-progress-bar" id="upload-progress-bar"></div>
     </div>
   </section>
 
@@ -679,8 +741,28 @@ function formatDate(ts) {
     `${now.getDate()} de ${months[now.getMonth()]}, ${now.getFullYear()}`;
 })();
 
-function sendLetter() { /* overridden by module */ }
-function deleteLetter() { /* overridden by module */ }
+let uploadSender = 'Markos';
+let chosenFile   = null;
+
+function selectUploadSender(name) {
+  uploadSender = name;
+  const isMarkos = name === 'Markos';
+  document.getElementById('upload-btn-markos').classList.toggle('active', isMarkos);
+  document.getElementById('upload-btn-iris').classList.toggle('active', !isMarkos);
+  const label = document.getElementById('upload-file-label');
+  label.style.color          = isMarkos ? 'var(--gold-light)' : 'var(--rose-light)';
+  label.style.background     = isMarkos ? 'var(--gold-bg)'    : 'var(--rose-bg)';
+  label.style.borderColor    = isMarkos ? 'var(--gold-border)': 'var(--rose-border)';
+}
+
+function onFileChosen(input) {
+  chosenFile = input.files[0] || null;
+  document.getElementById('upload-filename').textContent = chosenFile ? chosenFile.name : '';
+}
+
+function sendLetter()          { /* overridden by module */ }
+function deleteLetter()        { /* overridden by module */ }
+function uploadPhysicalLetter(){ /* overridden by module */ }
 
 function openModal(letter) {
   currentLetterKey = letter.key || null;
@@ -710,8 +792,9 @@ document.addEventListener('keydown', e => {
 </script>
 
 <script type="module">
-import { initializeApp }                        from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getDatabase, ref, push, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { initializeApp }                              from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, push, remove, onValue }   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
 
 const firebaseConfig = {
   apiKey:            "AIzaSyB1wOAWC3qE-osPs9UhGbrvcQ1PxAiu81s",
@@ -725,12 +808,96 @@ const firebaseConfig = {
 
 const app        = initializeApp(firebaseConfig);
 const db         = getDatabase(app);
+const storage    = getStorage(app);
 const lettersRef = ref(db, 'letters');
+const physicalRef = ref(db, 'physical-letters');
 
 function escapeHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// ── Physical letters ──
+function renderPhysical(items) {
+  const grid = document.getElementById('physical-grid');
+  grid.innerHTML = '';
+  if (items.length === 0) {
+    grid.innerHTML = '<p class="feed-empty">nenhuma carta física ainda · adicione abaixo</p>';
+    return;
+  }
+  items.forEach(item => {
+    const isGold = item.color === 'gold';
+    const a = document.createElement('a');
+    a.href = item.url;
+    a.target = '_blank';
+    a.className = 'letter-card ' + (isGold ? 'gold' : 'rose');
+    a.innerHTML = `
+      <span class="letter-icon">✉</span>
+      <div class="letter-info">
+        <span class="letter-title">${escapeHtml(item.title)}</span>
+        <span class="letter-sub">${escapeHtml(item.sub)}</span>
+      </div>
+      <span class="letter-arrow">→</span>
+    `;
+    grid.appendChild(a);
+  });
+}
+
+onValue(physicalRef, snapshot => {
+  const data = snapshot.val() || {};
+  const items = Object.entries(data)
+    .map(([key, val]) => ({ key, ...val }))
+    .sort((a, b) => a.createdAt - b.createdAt);
+  renderPhysical(items);
+});
+
+// ── Upload physical letter ──
+window.uploadPhysicalLetter = function() {
+  const file  = chosenFile;
+  const title = document.getElementById('upload-title').value.trim();
+  const sub   = document.getElementById('upload-sub').value.trim();
+
+  if (!file)  { alert('Escolha uma imagem primeiro.'); return; }
+  if (!title) { alert('Preencha o título.'); return; }
+  if (!sub)   { alert('Preencha o subtítulo.'); return; }
+
+  const btn      = document.getElementById('upload-submit-btn');
+  const wrap     = document.getElementById('upload-progress-wrap');
+  const bar      = document.getElementById('upload-progress-bar');
+  const success  = document.getElementById('upload-success');
+
+  btn.disabled   = true;
+  wrap.style.display = 'block';
+
+  const fileRef  = sRef(storage, `physical-letters/${Date.now()}_${file.name}`);
+  const task     = uploadBytesResumable(fileRef, file);
+
+  task.on('state_changed',
+    snap => { bar.style.width = (snap.bytesTransferred / snap.totalBytes * 100) + '%'; },
+    err  => { console.error(err); btn.disabled = false; wrap.style.display = 'none'; },
+    async () => {
+      const url = await getDownloadURL(task.snapshot.ref);
+      await push(physicalRef, {
+        title,
+        sub,
+        color: uploadSender === 'Markos' ? 'gold' : 'rose',
+        url,
+        createdAt: Date.now(),
+      });
+      btn.disabled = false;
+      wrap.style.display = 'none';
+      bar.style.width = '0%';
+      document.getElementById('upload-title').value = '';
+      document.getElementById('upload-sub').value   = '';
+      document.getElementById('upload-filename').textContent = '';
+      document.getElementById('upload-file').value  = '';
+      chosenFile = null;
+      success.classList.add('show');
+      setTimeout(() => success.classList.remove('show'), 3000);
+    }
+  );
+};
+
+// ── Digital letters feed ──
 function renderFeed(letters) {
   const list = document.getElementById('feed-list');
   list.innerHTML = '';
@@ -767,10 +934,8 @@ window.sendLetter = function() {
   const area = document.getElementById('compose-area');
   const body = area.value.trim();
   if (!body) return;
-
   const btn = document.getElementById('send-btn');
   btn.disabled = true;
-
   push(lettersRef, { from: currentSender, body, createdAt: Date.now() }).then(() => {
     area.value = '';
     btn.disabled = false;

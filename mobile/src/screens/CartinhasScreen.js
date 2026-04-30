@@ -7,31 +7,10 @@ import {
 import { useFonts, CormorantGaramond_300Light, CormorantGaramond_300Light_Italic, CormorantGaramond_400Regular } from '@expo-google-fonts/cormorant-garamond';
 import { DMMono_300Light } from '@expo-google-fonts/dm-mono';
 import { ref, push, remove, onValue } from 'firebase/database';
-import { Asset } from 'expo-asset';
-import * as Sharing from 'expo-sharing';
 import { db } from '../lib/firebase';
 import { colors } from '../lib/theme';
 import { notifyNewLetter } from '../lib/notifications';
 import { myTokenKey } from '../lib/tokenStore';
-
-const PHYSICAL = [
-  {
-    id: 'markos-apr16',
-    title: 'Cartinha — 16 de abril, 2026',
-    sub: 'de Markos, com carinho · quinta-feira',
-    color: 'gold',
-    type: 'image',
-    asset: require('../../assets/love_letter.jpg'),
-  },
-  {
-    id: 'iris-apr22',
-    title: 'Cartinha — 22 de abril, 2026',
-    sub: 'da Iris, com amor · para guardar sempre',
-    color: 'rose',
-    type: 'pdf',
-    asset: require('../../assets/Cartinha.pdf'),
-  },
-];
 
 const MONTHS = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 
@@ -47,21 +26,22 @@ function todayStr() {
 
 export default function CartinhasScreen() {
   const { width } = useWindowDimensions();
+  const [physical, setPhysical] = useState([]);
   const [letters, setLetters] = useState([]);
   const [sender, setSender] = useState('Markos');
   const [body, setBody] = useState('');
   const [selected, setSelected] = useState(null);
   const [photoUri, setPhotoUri] = useState(null);
 
-  async function openPhysical(letter) {
-    const asset = Asset.fromModule(letter.asset);
-    await asset.downloadAsync();
-    if (letter.type === 'image') {
-      setPhotoUri(asset.localUri);
-    } else {
-      await Sharing.shareAsync(asset.localUri, { mimeType: 'application/pdf' });
-    }
-  }
+  useEffect(() => {
+    return onValue(ref(db, 'physical-letters'), snapshot => {
+      const data = snapshot.val() || {};
+      const list = Object.entries(data)
+        .map(([key, val]) => ({ key, ...val }))
+        .sort((a, b) => a.createdAt - b.createdAt);
+      setPhysical(list);
+    });
+  }, []);
 
   const [fontsLoaded] = useFonts({
     CormorantGaramond_300Light,
@@ -122,24 +102,28 @@ export default function CartinhasScreen() {
         {/* Physical letters */}
         <Text style={s.sectionLabel}>cartas físicas · guardadas com carinho</Text>
         <Text style={[s.h2, { color: colors.goldLight }]}>Cartas escritas</Text>
-        {PHYSICAL.map(letter => {
-          const isGold = letter.color === 'gold';
-          return (
-            <TouchableOpacity
-              key={letter.id}
-              style={[s.physicalCard, { backgroundColor: isGold ? colors.goldBg : colors.roseBg, borderColor: isGold ? colors.goldBorder : colors.roseBorder }]}
-              onPress={() => openPhysical(letter)}
-              activeOpacity={0.75}
-            >
-              <Text style={[s.physicalIcon, { color: isGold ? colors.goldLight : colors.roseLight }]}>✉</Text>
-              <View style={s.physicalInfo}>
-                <Text style={s.physicalTitle}>{letter.title}</Text>
-                <Text style={s.physicalSub}>{letter.sub}</Text>
-              </View>
-              <Text style={[s.physicalArrow, { color: isGold ? colors.goldLight : colors.roseLight }]}>→</Text>
-            </TouchableOpacity>
-          );
-        })}
+        {physical.length === 0 ? (
+          <Text style={s.empty}>nenhuma carta física ainda</Text>
+        ) : (
+          physical.map(letter => {
+            const isGold = letter.color === 'gold';
+            return (
+              <TouchableOpacity
+                key={letter.key}
+                style={[s.physicalCard, { backgroundColor: isGold ? colors.goldBg : colors.roseBg, borderColor: isGold ? colors.goldBorder : colors.roseBorder }]}
+                onPress={() => setPhotoUri(letter.url)}
+                activeOpacity={0.75}
+              >
+                <Text style={[s.physicalIcon, { color: isGold ? colors.goldLight : colors.roseLight }]}>✉</Text>
+                <View style={s.physicalInfo}>
+                  <Text style={s.physicalTitle}>{letter.title}</Text>
+                  <Text style={s.physicalSub}>{letter.sub}</Text>
+                </View>
+                <Text style={[s.physicalArrow, { color: isGold ? colors.goldLight : colors.roseLight }]}>→</Text>
+              </TouchableOpacity>
+            );
+          })
+        )}
 
         <View style={s.divider} />
 
@@ -236,7 +220,7 @@ export default function CartinhasScreen() {
             {photoUri && (
               <Image
                 source={{ uri: photoUri }}
-                style={{ width, height: width * 1.4 }}
+                style={{ width, height: width * 1.5 }}
                 resizeMode="contain"
               />
             )}
