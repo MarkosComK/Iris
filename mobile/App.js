@@ -9,12 +9,10 @@ import ProgramasScreen from './src/screens/ProgramasScreen';
 import CartinhasScreen from './src/screens/CartinhasScreen';
 import AnimatedTabBar  from './src/components/AnimatedTabBar';
 import { registerToken } from './src/lib/notifications';
+import { myTokenKey } from './src/lib/tokenStore';
 import { colors } from './src/lib/theme';
 
 const Tab = createBottomTabNavigator();
-
-// Shared ref so CartinhasScreen can access the current device's token key
-export const myTokenKey = { current: null };
 
 export default function App() {
   const notificationListener = useRef();

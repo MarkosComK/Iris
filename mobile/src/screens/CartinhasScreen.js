@@ -9,7 +9,7 @@ import { ref, push, remove, onValue } from 'firebase/database';
 import { db } from '../lib/firebase';
 import { colors } from '../lib/theme';
 import { notifyNewLetter } from '../lib/notifications';
-import { myTokenKey } from '../../App';
+import { myTokenKey } from '../lib/tokenStore';
 
 const MONTHS = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 
