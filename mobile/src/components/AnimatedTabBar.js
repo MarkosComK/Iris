@@ -3,11 +3,13 @@ import { View, Text, TouchableOpacity, StyleSheet, Platform, Animated } from 're
 import * as Haptics from 'expo-haptics';
 import { colors } from '../lib/theme';
 
-const ICONS   = { Home: '⬡', Programas: '◇', Cartinhas: '✉' };
-const LABELS  = { Home: 'início', Programas: 'programas', Cartinhas: 'cartinhas' };
-const ACCENTS = { Home: colors.goldLight, Programas: colors.tealLight, Cartinhas: colors.roseLight };
+const TABS = [
+  { name: 'Home',      label: 'início',    icon: '⬡', accent: colors.goldLight },
+  { name: 'Programas', label: 'programas', icon: '◇', accent: colors.tealLight },
+  { name: 'Cartinhas', label: 'cartinhas', icon: '✉', accent: colors.roseLight },
+];
 
-function TabItem({ route, isFocused, onPress }) {
+function TabItem({ tab, isFocused, onPress }) {
   const scale      = useRef(new Animated.Value(isFocused ? 1 : 0.85)).current;
   const translateY = useRef(new Animated.Value(isFocused ? -2 : 0)).current;
   const opacity    = useRef(new Animated.Value(isFocused ? 1 : 0.45)).current;
@@ -27,41 +29,36 @@ function TabItem({ route, isFocused, onPress }) {
     onPress();
   }
 
-  const accent = ACCENTS[route.name];
-
   return (
     <TouchableOpacity style={s.tab} onPress={handlePress} activeOpacity={1}>
       <Animated.Text style={[
         s.icon,
-        { color: isFocused ? accent : colors.hint },
+        { color: isFocused ? tab.accent : colors.hint },
         { transform: [{ scale }, { translateY }], opacity },
       ]}>
-        {ICONS[route.name]}
+        {tab.icon}
       </Animated.Text>
-      <Text style={[s.label, { color: isFocused ? accent : colors.hint }]}>
-        {LABELS[route.name]}
+      <Text style={[s.label, { color: isFocused ? tab.accent : colors.hint }]}>
+        {tab.label}
       </Text>
       <Animated.View style={[
         s.dot,
-        { backgroundColor: accent },
+        { backgroundColor: tab.accent },
         { transform: [{ scaleX: dotScale }], opacity: dotScale },
       ]} />
     </TouchableOpacity>
   );
 }
 
-export default function AnimatedTabBar({ state, navigation }) {
+export default function AnimatedTabBar({ activeIndex, onTabPress }) {
   return (
     <View style={s.bar}>
-      {state.routes.map((route, index) => (
+      {TABS.map((tab, index) => (
         <TabItem
-          key={route.key}
-          route={route}
-          isFocused={state.index === index}
-          onPress={() => {
-            const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-            if (!event.defaultPrevented) navigation.navigate(route.name);
-          }}
+          key={tab.name}
+          tab={tab}
+          isFocused={activeIndex === index}
+          onPress={() => onTabPress(index)}
         />
       ))}
     </View>
