@@ -1,17 +1,37 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import * as Notifications from 'expo-notifications';
 
 import HomeScreen      from './src/screens/HomeScreen';
 import ProgramasScreen from './src/screens/ProgramasScreen';
 import CartinhasScreen from './src/screens/CartinhasScreen';
 import AnimatedTabBar  from './src/components/AnimatedTabBar';
-import { colors }      from './src/lib/theme';
+import { registerToken } from './src/lib/notifications';
+import { colors } from './src/lib/theme';
 
 const Tab = createBottomTabNavigator();
 
+// Shared ref so CartinhasScreen can access the current device's token key
+export const myTokenKey = { current: null };
+
 export default function App() {
+  const notificationListener = useRef();
+
+  useEffect(() => {
+    registerToken().then(result => {
+      if (result) myTokenKey.current = result.key;
+    });
+
+    // Listen for taps on notifications while app is open
+    notificationListener.current = Notifications.addNotificationResponseReceivedListener(() => {
+      // navigate to Cartinhas tab on notification tap — handled via linking in future
+    });
+
+    return () => Notifications.removeNotificationSubscription(notificationListener.current);
+  }, []);
+
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -30,7 +50,6 @@ export default function App() {
             color: colors.text,
           },
           headerTintColor: colors.text,
-          // Smooth fade + slight upward slide on tab switch
           animation: 'fade',
           animationDuration: 180,
         }}

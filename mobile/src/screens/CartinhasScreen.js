@@ -8,6 +8,8 @@ import { DMMono_300Light } from '@expo-google-fonts/dm-mono';
 import { ref, push, remove, onValue } from 'firebase/database';
 import { db } from '../lib/firebase';
 import { colors } from '../lib/theme';
+import { notifyNewLetter } from '../lib/notifications';
+import { myTokenKey } from '../../App';
 
 const MONTHS = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 
@@ -48,6 +50,7 @@ export default function CartinhasScreen() {
     const text = body.trim();
     if (!text) return;
     push(ref(db, 'letters'), { from: sender, body: text, createdAt: Date.now() });
+    notifyNewLetter(myTokenKey.current, sender, text);
     setBody('');
   }
 
