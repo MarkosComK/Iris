@@ -62,7 +62,7 @@ Her push token should appear within seconds of opening the app.
 
 **Pending before next build:**
 - Test push notifications (tokens/ node should populate after she opens new APK)
-- More features TBD
+- Customize notification popup UI (icon, color, sound) — test with cheap Android via USB + `adb logcat | grep notifications` for real-time logs
 
 ## Adding a new physical letter
 Drop the JPG into `mobile/assets/` and add an entry to the `PHYSICAL` array in `mobile/src/screens/CartinhasScreen.js`. Also add the card to the `letters-grid` in `letters.html`. Then do a new `eas build` so she gets the updated APK.
