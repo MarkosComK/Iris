@@ -57,6 +57,7 @@ export async function registerToken() {
 }
 
 export async function notifyNewLetter(senderKey, senderName, preview) {
+  console.log('[notifications] notifyNewLetter called, senderKey:', senderKey);
   const snapshot = await get(ref(db, 'tokens'));
   if (!snapshot.exists()) {
     console.log('[notifications] no tokens in DB');

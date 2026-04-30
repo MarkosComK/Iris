@@ -73,12 +73,12 @@ export default function CartinhasScreen() {
     });
   }, []);
 
-  function send() {
+  async function send() {
     const text = body.trim();
     if (!text) return;
     push(ref(db, 'letters'), { from: sender, body: text, createdAt: Date.now() });
-    notifyNewLetter(myTokenKey.current, sender, text);
     setBody('');
+    await notifyNewLetter(myTokenKey.current, sender, text).catch(e => console.error('[notifications] send error:', e));
   }
 
   function deleteLetter(letter) {
