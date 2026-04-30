@@ -2,14 +2,36 @@ import React, { useState, useEffect } from 'react';
 import {
   View, Text, ScrollView, TextInput, TouchableOpacity, Modal,
   StyleSheet, KeyboardAvoidingView, Platform, Alert, Pressable,
+  Image, useWindowDimensions,
 } from 'react-native';
 import { useFonts, CormorantGaramond_300Light, CormorantGaramond_300Light_Italic, CormorantGaramond_400Regular } from '@expo-google-fonts/cormorant-garamond';
 import { DMMono_300Light } from '@expo-google-fonts/dm-mono';
 import { ref, push, remove, onValue } from 'firebase/database';
+import { Asset } from 'expo-asset';
+import * as Sharing from 'expo-sharing';
 import { db } from '../lib/firebase';
 import { colors } from '../lib/theme';
 import { notifyNewLetter } from '../lib/notifications';
 import { myTokenKey } from '../lib/tokenStore';
+
+const PHYSICAL = [
+  {
+    id: 'markos-apr16',
+    title: 'Cartinha — 16 de abril, 2026',
+    sub: 'de Markos, com carinho · quinta-feira',
+    color: 'gold',
+    type: 'image',
+    asset: require('../../assets/love_letter.jpg'),
+  },
+  {
+    id: 'iris-apr22',
+    title: 'Cartinha — 22 de abril, 2026',
+    sub: 'da Iris, com amor · para guardar sempre',
+    color: 'rose',
+    type: 'pdf',
+    asset: require('../../assets/Cartinha.pdf'),
+  },
+];
 
 const MONTHS = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 
@@ -24,10 +46,22 @@ function todayStr() {
 }
 
 export default function CartinhasScreen() {
+  const { width } = useWindowDimensions();
   const [letters, setLetters] = useState([]);
   const [sender, setSender] = useState('Markos');
   const [body, setBody] = useState('');
   const [selected, setSelected] = useState(null);
+  const [photoUri, setPhotoUri] = useState(null);
+
+  async function openPhysical(letter) {
+    const asset = Asset.fromModule(letter.asset);
+    await asset.downloadAsync();
+    if (letter.type === 'image') {
+      setPhotoUri(asset.localUri);
+    } else {
+      await Sharing.shareAsync(asset.localUri, { mimeType: 'application/pdf' });
+    }
+  }
 
   const [fontsLoaded] = useFonts({
     CormorantGaramond_300Light,
@@ -84,6 +118,28 @@ export default function CartinhasScreen() {
           <Text style={s.h1}>Cartas entre{'\n'}<Text style={s.h1Em}>nós</Text></Text>
           <Text style={s.subtitle}>Cada carta, uma lembrança guardada para sempre.</Text>
         </View>
+
+        {/* Physical letters */}
+        <Text style={s.sectionLabel}>cartas físicas · guardadas com carinho</Text>
+        <Text style={[s.h2, { color: colors.goldLight }]}>Cartas escritas</Text>
+        {PHYSICAL.map(letter => {
+          const isGold = letter.color === 'gold';
+          return (
+            <TouchableOpacity
+              key={letter.id}
+              style={[s.physicalCard, { backgroundColor: isGold ? colors.goldBg : colors.roseBg, borderColor: isGold ? colors.goldBorder : colors.roseBorder }]}
+              onPress={() => openPhysical(letter)}
+              activeOpacity={0.75}
+            >
+              <Text style={[s.physicalIcon, { color: isGold ? colors.goldLight : colors.roseLight }]}>✉</Text>
+              <View style={s.physicalInfo}>
+                <Text style={s.physicalTitle}>{letter.title}</Text>
+                <Text style={s.physicalSub}>{letter.sub}</Text>
+              </View>
+              <Text style={[s.physicalArrow, { color: isGold ? colors.goldLight : colors.roseLight }]}>→</Text>
+            </TouchableOpacity>
+          );
+        })}
 
         <View style={s.divider} />
 
@@ -165,6 +221,32 @@ export default function CartinhasScreen() {
         )}
       </ScrollView>
 
+      {/* Full-screen photo viewer for love_letter.jpg */}
+      <Modal visible={!!photoUri} transparent animationType="fade" onRequestClose={() => setPhotoUri(null)}>
+        <View style={s.photoOverlay}>
+          <ScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={s.photoContainer}
+            maximumZoomScale={4}
+            minimumZoomScale={1}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            centerContent
+          >
+            {photoUri && (
+              <Image
+                source={{ uri: photoUri }}
+                style={{ width, height: width * 1.4 }}
+                resizeMode="contain"
+              />
+            )}
+          </ScrollView>
+          <TouchableOpacity style={s.photoClose} onPress={() => setPhotoUri(null)} activeOpacity={0.7}>
+            <Text style={s.photoCloseText}>fechar</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
       {/* Reading modal */}
       <Modal visible={!!selected} transparent animationType="fade" onRequestClose={() => setSelected(null)}>
         <Pressable style={s.overlay} onPress={() => setSelected(null)}>
@@ -222,6 +304,18 @@ const s = StyleSheet.create({
   feedRead:   { fontFamily: 'DMMono_300Light', fontSize: 9, color: colors.hint, textAlign: 'right', marginTop: 8, letterSpacing: 1 },
 
   empty:  { fontFamily: 'DMMono_300Light', fontSize: 12, color: colors.hint, textAlign: 'center', paddingVertical: 24 },
+
+  physicalCard:  { flexDirection: 'row', alignItems: 'center', gap: 14, borderWidth: 0.5, borderRadius: 6, padding: 14, marginBottom: 8 },
+  physicalIcon:  { fontSize: 28, lineHeight: 32, flexShrink: 0 },
+  physicalInfo:  { flex: 1, gap: 4 },
+  physicalTitle: { fontFamily: 'CormorantGaramond_400Regular', fontSize: 16, color: colors.text, fontStyle: 'italic' },
+  physicalSub:   { fontFamily: 'DMMono_300Light', fontSize: 10, color: colors.muted, letterSpacing: 0.5 },
+  physicalArrow: { fontFamily: 'DMMono_300Light', fontSize: 14, flexShrink: 0 },
+
+  photoOverlay:    { flex: 1, backgroundColor: 'rgba(8,6,4,0.97)' },
+  photoContainer:  { flexGrow: 1, justifyContent: 'center', alignItems: 'center' },
+  photoClose:      { position: 'absolute', bottom: 52, alignSelf: 'center', borderWidth: 0.5, borderColor: colors.border, borderRadius: 4, paddingVertical: 8, paddingHorizontal: 20 },
+  photoCloseText:  { fontFamily: 'DMMono_300Light', fontSize: 10, letterSpacing: 2, color: colors.muted, textTransform: 'uppercase' },
 
   overlay:      { flex: 1, backgroundColor: 'rgba(10,8,6,0.88)', justifyContent: 'center', padding: 24 },
   modal:        { backgroundColor: colors.surface, borderWidth: 0.5, borderRadius: 12, padding: 28, maxHeight: '80%' },

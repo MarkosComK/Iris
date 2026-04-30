@@ -36,7 +36,8 @@
           "color": "#c46b8a",
           "sounds": []
         }
-      ]
+      ],
+      "expo-asset"
     ]
   }
 }
