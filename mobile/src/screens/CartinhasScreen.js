@@ -45,7 +45,7 @@ function todayStr() {
 export default function CartinhasScreen() {
   const { width } = useWindowDimensions();
   const [letters, setLetters] = useState([]);
-  const [sender, setSender] = useState('Markos');
+  const sender = Platform.OS === 'ios' ? 'Markos' : 'Iris';
   const [body, setBody] = useState('');
   const [selected, setSelected] = useState(null);
   const [photoUri, setPhotoUri] = useState(null);
@@ -141,26 +141,6 @@ export default function CartinhasScreen() {
         <Text style={[s.h2, { color: isMarkos ? colors.goldLight : colors.roseLight }]}>
           Escrever uma cartinha
         </Text>
-
-        <View style={s.senderRow}>
-          {['Markos', 'Iris'].map(name => {
-            const active = sender === name;
-            const isM = name === 'Markos';
-            return (
-              <TouchableOpacity
-                key={name}
-                style={[
-                  s.senderBtn,
-                  active && { backgroundColor: isM ? colors.goldBg : colors.roseBg, borderColor: isM ? colors.goldBorder : colors.roseBorder },
-                ]}
-                onPress={() => setSender(name)}
-                activeOpacity={0.7}
-              >
-                <Text style={[s.senderBtnText, active && { color: isM ? colors.goldLight : colors.roseLight }]}>{name}</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
 
         <Text style={s.composeDate}>{todayStr()}</Text>
         <TextInput
@@ -278,10 +258,6 @@ const s = StyleSheet.create({
   divider:       { height: 0.5, backgroundColor: colors.border, marginVertical: 32 },
   sectionLabel:  { fontFamily: 'DMMono_300Light', fontSize: 10, letterSpacing: 2.5, color: colors.muted, textTransform: 'uppercase', marginBottom: 6 },
   h2:            { fontFamily: 'CormorantGaramond_300Light', fontSize: 26, marginBottom: 16, lineHeight: 30 },
-
-  senderRow:     { flexDirection: 'row', gap: 8, marginBottom: 14 },
-  senderBtn:     { paddingVertical: 8, paddingHorizontal: 18, borderRadius: 6, borderWidth: 0.5, borderColor: colors.border },
-  senderBtnText: { fontFamily: 'DMMono_300Light', fontSize: 10, letterSpacing: 2, color: colors.muted, textTransform: 'uppercase' },
 
   composeDate: { fontFamily: 'DMMono_300Light', fontSize: 10, color: colors.hint, letterSpacing: 1.2, marginBottom: 10 },
   composeArea: { backgroundColor: colors.surface, borderWidth: 0.5, borderRadius: 8, padding: 16, fontFamily: 'CormorantGaramond_300Light', fontSize: 17, color: colors.text, lineHeight: 30, minHeight: 200, marginBottom: 12 },
