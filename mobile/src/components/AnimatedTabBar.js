@@ -7,6 +7,7 @@ const TABS = [
   { name: 'Home',      label: 'início',    icon: '⬡', accent: colors.goldLight },
   { name: 'Programas', label: 'programas', icon: '◇', accent: colors.tealLight },
   { name: 'Cartinhas', label: 'cartinhas', icon: '✉', accent: colors.roseLight },
+  { name: 'Desenho',   label: 'desenho',   icon: '◈', accent: colors.roseLight },
 ];
 
 function TabItem({ tab, isFocused, onPress }) {

@@ -9,6 +9,7 @@ import { StatusBar } from 'expo-status-bar';
 import HomeScreen      from './src/screens/HomeScreen';
 import ProgramasScreen from './src/screens/ProgramasScreen';
 import CartinhasScreen from './src/screens/CartinhasScreen';
+import DesenhoScreen   from './src/screens/DesenhoScreen';
 import AnimatedTabBar  from './src/components/AnimatedTabBar';
 import { registerToken } from './src/lib/notifications';
 import { myTokenKey }   from './src/lib/tokenStore';
@@ -18,6 +19,7 @@ const SCREENS = [
   { name: 'Home',      title: 'Para Iris', Component: HomeScreen      },
   { name: 'Programas', title: 'Programas', Component: ProgramasScreen },
   { name: 'Cartinhas', title: 'Cartinhas', Component: CartinhasScreen },
+  { name: 'Desenho',   title: 'Desenho',   Component: DesenhoScreen   },
 ];
 
 function Pager() {
@@ -27,7 +29,7 @@ function Pager() {
   const titleOpacity = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    registerToken().then(r => { if (r) myTokenKey.current = r.key; });
+    registerToken().then(r => { if (r) myTokenKey.current = r.key; }).catch(e => console.error('[registerToken] failed:', e));
   }, []);
 
   const fadeTitle = useCallback(() => {
@@ -60,7 +62,7 @@ function Pager() {
         </Animated.Text>
       </View>
 
-      {/* Swipeable pager — all screens mounted, no blink ever */}
+      {/* Swipeable pager — scrollEnabled=false on Desenho tab to avoid draw conflicts */}
       <ScrollView
         ref={scrollRef}
         horizontal
@@ -70,6 +72,7 @@ function Pager() {
         scrollEventThrottle={16}
         decelerationRate="fast"
         bounces={false}
+        scrollEnabled={active !== 3}
         style={s.pager}
       >
         {SCREENS.map(({ name, Component }) => (

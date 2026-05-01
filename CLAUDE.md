@@ -14,7 +14,7 @@ A personal love site built by Markos for Iris Kemilly. Romantic, intimate, no st
 
 ### Mobile (`/mobile`)
 - Expo (SDK 54) + React Native, managed workflow
-- Three tab screens: HomeScreen (periodic table), ProgramasScreen (date ideas), CartinhasScreen (letters)
+- Four tab screens: HomeScreen (periodic table), ProgramasScreen (date ideas), CartinhasScreen (letters), DesenhoScreen (shared drawing)
 - Run: `cd mobile && npx expo start`
 - Branch: `mobile-app` (not yet merged to `main`)
 
@@ -22,7 +22,7 @@ A personal love site built by Markos for Iris Kemilly. Romantic, intimate, no st
 - Firebase Realtime Database (same project for both web and mobile)
 - Project: `iris-a9ccc`
 - DB URL: `https://iris-a9ccc-default-rtdb.firebaseio.com`
-- Two nodes in use: `date-ideas/` and `letters/`
+- Nodes in use: `date-ideas/`, `letters/`, `drawings/markos`, `drawings/iris`
 - No auth — security through obscurity (private repo, no public link)
 
 ## Design system
@@ -69,6 +69,22 @@ Drop the JPG into `mobile/assets/` and add an entry to the `PHYSICAL` array in `
 
 ## Files to never touch
 - `iris-a9ccc-firebase-adminsdk-fbsvc-d5a8b2bcca.json` (gitignored, Firebase admin SDK key)
+- `mobile/fcm-service-account.json` (gitignored, FCM V1 service account key uploaded to EAS)
+
+## Shared drawing feature (DesenhoScreen)
+- `mobile/src/screens/DesenhoScreen.js` — drawing canvas, author toggle (markos/iris), send/view received
+- `mobile/src/lib/drawings.js` — Firebase helpers: `sendDrawing(author, strokes)`, `subscribeToDrawing(author, cb)`
+- Uses `react-native-svg` for rendering (Skia was dropped — incompatible with Expo Go SDK 54)
+- Strokes stored as `{color, points: [{x,y}]}` under `drawings/markos` and `drawings/iris`
+- Pager swipe is disabled on the Desenho tab so horizontal drawing doesn't switch tabs (`scrollEnabled={active !== 3}` in App.js)
+- **Widget not yet built** — see TODO below
+
+## TODO — surface this at the start of every session
+- [ ] Build new Android APK and send to Iris (`eas build --platform android --profile preview`) — includes drawing feature + flower.png notification icon + google-services.json FCM fix
+- [ ] Test push notifications both directions after she installs new APK
+- [ ] Android home screen widget (optional, decided later): `react-native-android-widget` + EAS build, shows latest drawing received; requires background FCM → render-to-PNG → widget refresh flow
+- [ ] Build always-on ambient screen (`/iris/alwayson.html`) for Markos's iPhone
+- [ ] Merge `mobile-app` branch to `main` when everything is stable
 
 ---
 
