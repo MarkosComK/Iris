@@ -1,11 +1,16 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet,
-  PanResponder, useWindowDimensions,
+  PanResponder, useWindowDimensions, Platform,
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { colors } from '../lib/theme';
 import { AUTHOR_COLORS, sendDrawing, subscribeToDrawing } from '../lib/drawings';
+
+const MY_AUTHOR    = Platform.OS === 'ios' ? 'markos' : 'iris';
+const OTHER_AUTHOR = Platform.OS === 'ios' ? 'iris'   : 'markos';
+const MY_COLOR     = AUTHOR_COLORS[MY_AUTHOR];
+const OTHER_LABEL  = `de ${OTHER_AUTHOR}`;
 
 function toD(points) {
   if (points.length < 2) return '';
@@ -29,7 +34,6 @@ export default function DesenhoScreen() {
   const { width } = useWindowDimensions();
   const canvasSize = width - 32;
 
-  const [author, setAuthor]       = useState('markos');
   const [viewMode, setViewMode]   = useState('draw'); // 'draw' | 'received'
   const [myStrokes, setMyStrokes] = useState([]);
   const [sentState, setSentState] = useState(false);
@@ -37,31 +41,18 @@ export default function DesenhoScreen() {
   const currentPoints             = useRef([]);
   const [, tick]                  = useState(0);
 
-  const otherAuthor = author === 'markos' ? 'iris' : 'markos';
-  const myColor     = AUTHOR_COLORS[author];
-  const otherLabel  = `de ${otherAuthor}`;
-
-  // Clear my canvas when switching author
   useEffect(() => {
-    setMyStrokes([]);
-    currentPoints.current = [];
-    setViewMode('draw');
-  }, [author]);
-
-  // Subscribe to the other person's drawing
-  useEffect(() => {
-    setReceived(null);
-    return subscribeToDrawing(otherAuthor, data => {
+    return subscribeToDrawing(OTHER_AUTHOR, data => {
       if (data?.strokes) setReceived(normalizeStrokes(data.strokes));
     });
-  }, [otherAuthor]);
+  }, []);
 
   const panResponder = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder:         () => true,
-      onStartShouldSetPanResponderCapture:  () => true,
-      onMoveShouldSetPanResponder:          () => true,
-      onMoveShouldSetPanResponderCapture:   () => true,
+      onStartShouldSetPanResponder:        () => true,
+      onStartShouldSetPanResponderCapture: () => true,
+      onMoveShouldSetPanResponder:         () => true,
+      onMoveShouldSetPanResponderCapture:  () => true,
       onPanResponderGrant: e => {
         const { locationX: x, locationY: y } = e.nativeEvent;
         currentPoints.current = [{ x, y }];
@@ -79,17 +70,13 @@ export default function DesenhoScreen() {
       onPanResponderRelease: () => {
         const pts = currentPoints.current;
         if (pts.length >= 2) {
-          setMyStrokes(prev => [...prev, { color: myColor, points: pts, d: toD(pts) }]);
+          setMyStrokes(prev => [...prev, { color: MY_COLOR, points: pts, d: toD(pts) }]);
         }
         currentPoints.current = [];
         tick(n => n + 1);
       },
     }),
   ).current;
-
-  const handleAuthorChange = useCallback((a) => {
-    if (a !== author) setAuthor(a);
-  }, [author]);
 
   const handleClear = useCallback(() => {
     setMyStrokes([]);
@@ -99,37 +86,20 @@ export default function DesenhoScreen() {
 
   const handleSend = useCallback(async () => {
     if (myStrokes.length === 0) return;
-    await sendDrawing(author, myStrokes.map(({ color, points }) => ({ color, points })));
+    await sendDrawing(MY_AUTHOR, myStrokes.map(({ color, points }) => ({ color, points })));
     setSentState(true);
     setTimeout(() => setSentState(false), 2000);
-  }, [author, myStrokes]);
+  }, [myStrokes]);
 
-  const activeD    = toD(currentPoints.current);
-  const isEmpty    = myStrokes.length === 0 && currentPoints.current.length === 0;
-  const showingMine = viewMode === 'draw';
-
+  const showingMine    = viewMode === 'draw';
+  const activeD        = toD(currentPoints.current);
+  const isEmpty        = myStrokes.length === 0 && currentPoints.current.length === 0;
   const displayStrokes = showingMine ? myStrokes : (received || []);
-  const displayColor   = showingMine ? myColor : AUTHOR_COLORS[otherAuthor];
 
   return (
     <View style={s.root}>
-      {/* Author toggle */}
-      <View style={s.toggle}>
-        {['markos', 'iris'].map(a => (
-          <TouchableOpacity
-            key={a}
-            style={[s.toggleBtn, author === a && { borderColor: AUTHOR_COLORS[a], backgroundColor: `${AUTHOR_COLORS[a]}18` }]}
-            onPress={() => handleAuthorChange(a)}
-          >
-            <Text style={[s.toggleText, author === a && { color: AUTHOR_COLORS[a] }]}>{a}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <Text style={s.label}>{showingMine ? 'meu desenho' : OTHER_LABEL}</Text>
 
-      {/* Canvas label */}
-      <Text style={s.label}>{showingMine ? 'meu desenho' : otherLabel}</Text>
-
-      {/* Canvas */}
       <View style={[s.canvas, { width: canvasSize, height: canvasSize }]}>
         <Svg width={canvasSize} height={canvasSize} style={StyleSheet.absoluteFill}>
           {displayStrokes.map((stroke, i) => (
@@ -137,17 +107,15 @@ export default function DesenhoScreen() {
               strokeWidth={3} fill="none" strokeLinecap="round" strokeLinejoin="round" />
           ))}
           {showingMine && activeD ? (
-            <Path d={activeD} stroke={myColor}
+            <Path d={activeD} stroke={MY_COLOR}
               strokeWidth={3} fill="none" strokeLinecap="round" strokeLinejoin="round" />
           ) : null}
         </Svg>
 
-        {/* Touch layer only active when drawing */}
         {showingMine && (
           <View style={StyleSheet.absoluteFill} {...panResponder.panHandlers} />
         )}
 
-        {/* Empty state for received */}
         {!showingMine && received === null && (
           <View style={s.empty}>
             <Text style={s.emptyText}>nenhum desenho ainda</Text>
@@ -155,7 +123,6 @@ export default function DesenhoScreen() {
         )}
       </View>
 
-      {/* Buttons */}
       {showingMine ? (
         <View style={s.row}>
           <TouchableOpacity style={s.btnGhost} onPress={handleClear}>
@@ -183,15 +150,6 @@ export default function DesenhoScreen() {
 
 const s = StyleSheet.create({
   root:         { flex: 1, backgroundColor: colors.bg, padding: 16, alignItems: 'center' },
-  toggle:       { flexDirection: 'row', gap: 8, marginBottom: 16, alignSelf: 'stretch' },
-  toggleBtn:    {
-    flex: 1, paddingVertical: 8, borderRadius: 4,
-    borderWidth: 0.5, borderColor: colors.border, alignItems: 'center',
-  },
-  toggleText:   {
-    fontFamily: 'DMMono_300Light', fontSize: 11, letterSpacing: 2,
-    textTransform: 'uppercase', color: colors.hint,
-  },
   label:        {
     fontFamily: 'DMMono_300Light', fontSize: 10, letterSpacing: 2,
     textTransform: 'uppercase', color: colors.muted,
