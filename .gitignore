@@ -1,1 +1,6 @@
 iris-a9ccc-firebase-adminsdk-fbsvc-d5a8b2bcca.json
+
+# WhatsApp Wrapped — raw private export (never commit the actual messages)
+wrapped/_chat.txt
+wrapped/*.zip
+WhatsApp Chat*.zip

@@ -1,0 +1,457 @@
+{
+  "generated_at": "2026-06-12T11:03:24",
+  "names": {
+    "markos": "Markos",
+    "iris": "Iris"
+  },
+  "timezone_note": "Horários no arquivo em UTC+1 (Markos). Iris em UTC-3 (Brasil), 4h atrás.",
+  "totals": {
+    "messages": 28097,
+    "by_person": {
+      "markos": 15617,
+      "iris": 12480
+    },
+    "words": {
+      "markos": 65748,
+      "iris": 37172
+    },
+    "words_total": 102920,
+    "chars": {
+      "markos": 344865,
+      "iris": 203165
+    },
+    "span_days": 65,
+    "active_days": 65,
+    "avg_per_day": 432.3
+  },
+  "range": {
+    "first": "2026-04-09T15:43:36",
+    "last": "2026-06-12T10:35:57",
+    "first_message": {
+      "sender": "markos",
+      "text": "É que daí eu tinha dois motivos pra na ter pedido o telefone antes",
+      "dt": "2026-04-09T15:43:36"
+    }
+  },
+  "busiest_day": {
+    "date": "2026-04-19",
+    "count": 1252
+  },
+  "by_month": {
+    "2026-04": 12421,
+    "2026-05": 11440,
+    "2026-06": 4236
+  },
+  "by_weekday": {
+    "Segunda": 5150,
+    "Terça": 3091,
+    "Quarta": 4481,
+    "Quinta": 3189,
+    "Sexta": 3025,
+    "Sábado": 4660,
+    "Domingo": 4501
+  },
+  "hour_markos": [
+    484,
+    483,
+    209,
+    24,
+    35,
+    34,
+    166,
+    113,
+    219,
+    1591,
+    1368,
+    1630,
+    1358,
+    1684,
+    1303,
+    1590,
+    2012,
+    1992,
+    2243,
+    2430,
+    2220,
+    1960,
+    1858,
+    1091
+  ],
+  "hour_iris": [
+    35,
+    34,
+    166,
+    113,
+    219,
+    1591,
+    1368,
+    1630,
+    1358,
+    1684,
+    1303,
+    1590,
+    2012,
+    1992,
+    2243,
+    2430,
+    2220,
+    1960,
+    1858,
+    1091,
+    484,
+    483,
+    209,
+    24
+  ],
+  "streak": {
+    "days": 65,
+    "start": "2026-04-09",
+    "end": "2026-06-12"
+  },
+  "first_text_of_day": {
+    "markos": 28,
+    "iris": 37
+  },
+  "response_seconds": {
+    "markos_median": 25,
+    "iris_median": 35,
+    "markos_avg": 234,
+    "iris_avg": 239
+  },
+  "emojis": {
+    "top": [
+      [
+        "❤",
+        274
+      ],
+      [
+        "🤤",
+        258
+      ],
+      [
+        "🥹",
+        94
+      ],
+      [
+        "💅",
+        79
+      ],
+      [
+        "😩",
+        79
+      ],
+      [
+        "💀",
+        66
+      ],
+      [
+        "🤨",
+        49
+      ],
+      [
+        "✨",
+        41
+      ],
+      [
+        "🙏",
+        36
+      ],
+      [
+        "🤔",
+        32
+      ],
+      [
+        "🫪",
+        32
+      ],
+      [
+        "🫰",
+        29
+      ]
+    ],
+    "markos": [
+      [
+        "😩",
+        79
+      ],
+      [
+        "💅",
+        78
+      ],
+      [
+        "🤤",
+        76
+      ],
+      [
+        "💀",
+        64
+      ],
+      [
+        "✨",
+        39
+      ],
+      [
+        "❤",
+        38
+      ]
+    ],
+    "iris": [
+      [
+        "❤",
+        236
+      ],
+      [
+        "🤤",
+        182
+      ],
+      [
+        "🥹",
+        80
+      ],
+      [
+        "🤨",
+        46
+      ],
+      [
+        "🫰",
+        22
+      ],
+      [
+        "😭",
+        16
+      ]
+    ],
+    "hearts": {
+      "markos": 40,
+      "iris": 236
+    }
+  },
+  "words_top": [
+    [
+      "slc",
+      496
+    ],
+    [
+      "acho",
+      412
+    ],
+    [
+      "mds",
+      394
+    ],
+    [
+      "call",
+      318
+    ],
+    [
+      "fazer",
+      317
+    ],
+    [
+      "babe",
+      289
+    ],
+    [
+      "ate",
+      275
+    ],
+    [
+      "dia",
+      272
+    ],
+    [
+      "ver",
+      245
+    ],
+    [
+      "assim",
+      235
+    ],
+    [
+      "video",
+      230
+    ],
+    [
+      "ainda",
+      223
+    ],
+    [
+      "entao",
+      221
+    ],
+    [
+      "cara",
+      214
+    ],
+    [
+      "casa",
+      200
+    ],
+    [
+      "min",
+      194
+    ],
+    [
+      "demais",
+      191
+    ],
+    [
+      "tenho",
+      190
+    ],
+    [
+      "mesmo",
+      185
+    ],
+    [
+      "agr",
+      177
+    ],
+    [
+      "gente",
+      175
+    ],
+    [
+      "nem",
+      174
+    ],
+    [
+      "amor",
+      167
+    ],
+    [
+      "sem",
+      162
+    ],
+    [
+      "kkkkkkkkkkkkkkkkkkkkkkkkk",
+      159
+    ],
+    [
+      "queria",
+      158
+    ],
+    [
+      "mim",
+      150
+    ],
+    [
+      "depois",
+      145
+    ],
+    [
+      "bebe",
+      144
+    ],
+    [
+      "kkkkkk",
+      144
+    ],
+    [
+      "nossa",
+      142
+    ],
+    [
+      "deve",
+      140
+    ],
+    [
+      "ficar",
+      132
+    ],
+    [
+      "sou",
+      129
+    ],
+    [
+      "tao",
+      127
+    ],
+    [
+      "kkkkk",
+      126
+    ],
+    [
+      "tipo",
+      126
+    ],
+    [
+      "sao",
+      123
+    ],
+    [
+      "amo",
+      121
+    ],
+    [
+      "dar",
+      120
+    ]
+  ],
+  "romantic": {
+    "te_amo": {
+      "markos": 42,
+      "iris": 25
+    },
+    "amor": {
+      "markos": 119,
+      "iris": 48
+    },
+    "saudade": {
+      "markos": 37,
+      "iris": 2
+    },
+    "love": {
+      "markos": 13,
+      "iris": 2
+    },
+    "bom_dia": {
+      "markos": 56,
+      "iris": 46
+    },
+    "boa_noite": {
+      "markos": 4,
+      "iris": 4
+    }
+  },
+  "laughs": {
+    "markos": 951,
+    "iris": 609
+  },
+  "madrugada": {
+    "markos": 656,
+    "iris": 579
+  },
+  "media": {
+    "by_type": {
+      "sticker": 2442,
+      "image": 1165,
+      "video": 752,
+      "audio": 1975,
+      "document": 20,
+      "GIF": 17
+    },
+    "total": 6371,
+    "markos": {
+      "sticker": 1499,
+      "video": 318,
+      "image": 635,
+      "audio": 682,
+      "GIF": 17,
+      "document": 1
+    },
+    "iris": {
+      "image": 530,
+      "sticker": 943,
+      "audio": 1293,
+      "video": 434,
+      "document": 19
+    }
+  },
+  "longest_message": {
+    "sender": "markos",
+    "chars": 2844,
+    "text": "Dentro dos Backrooms existe uma categoria de criaturas chamadas Still Lifes que sao naturezas-mortas vivas. O filme explica que elas são tentativas do ambiente de recriar pessoas reais do mundo exterior. A lógica é a mesma de pedir pra alguém desenhar um cachorro sem nunca ter visto um: o resultado vai ser estranho, malformado, funcionalmente vazio. As criaturas existem, mas sem reação, sem expressão, sem nada por dentro, literalmente: quando cortadas, o interior é branco, esponjoso, sem substância.\n\nEssa natureza das criaturas já diz muita coisa. Mas a cena do jantar vai além, porque ela não ",
+    "dt": "2026-06-08T09:51:48"
+  }
+}
